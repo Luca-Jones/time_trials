@@ -1,0 +1,9 @@
+<launch>
+    <node 
+        pkg="time_trials"
+        type="move_robot.py"
+        name="move_robot"
+        output="screen"
+    >
+    </node>
+</launch>
