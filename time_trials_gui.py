@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from python_qt_binding import loadUi
 
@@ -10,11 +10,14 @@ import os
 import threading
 import time
 import math
+import cv2
 
 import rospy
 from gazebo_msgs.msg import ModelState
 from gazebo_msgs.srv import SetModelState
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 SCORE_TRACKER_DIR = os.path.join(SCRIPT_DIR,
@@ -43,6 +46,12 @@ class TimeTrialsApp(QtWidgets.QMainWindow):
 
         self._timer_running = False
         self._score_pub = None
+        self._latest_frame = None
+        self._bridge = CvBridge()
+
+        self._cam_timer = QtCore.QTimer(self)
+        self._cam_timer.timeout.connect(self.SLOT_update_camera)
+        self._cam_timer.setInterval(1000 // 10)  # 10 fps
 
         self.start_competition_button.clicked.connect(self.SLOT_start_competition)
         self.reset_robot_button.clicked.connect(self.SLOT_reset_robot)
@@ -54,6 +63,7 @@ class TimeTrialsApp(QtWidgets.QMainWindow):
         self.start_competition_button.setVisible(False)
         self.reset_robot_button.setVisible(True)
         self.timer_button.setVisible(True)
+        self._cam_timer.start()
 
     def SLOT_start_competition(self):
         threading.Thread(target=self._run_competition, daemon=True).start()
@@ -79,7 +89,25 @@ class TimeTrialsApp(QtWidgets.QMainWindow):
 
         rospy.init_node('time_trials_gui', anonymous=True, disable_signals=True)
         self._score_pub = rospy.Publisher('/score_tracker', String, queue_size=1)
+        rospy.Subscriber('/B1/rrbot/camera1/image_raw', Image, self._camera_callback)
         rospy.sleep(1)
+
+    def _camera_callback(self, msg):
+        self._latest_frame = self._bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+
+    def _convert_cv_to_pixmap(self, cv_img):
+        cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+        height, width, channel = cv_img.shape
+        q_img = QtGui.QImage(cv_img.data, width, height,
+                             channel * width, QtGui.QImage.Format_RGB888)
+        return QtGui.QPixmap.fromImage(q_img)
+
+    def SLOT_update_camera(self):
+        if self._latest_frame is None:
+            return
+        frame = cv2.resize(self._latest_frame,
+                           (self.camera_label.width(), self.camera_label.height()))
+        self.camera_label.setPixmap(self._convert_cv_to_pixmap(frame))
 
     def SLOT_toggle_timer(self):
         if self._score_pub is None:

@@ -6,67 +6,64 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>380</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Time Trials</string>
+   <string>SIFT Demo</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="camera_label">
+   <widget class="QPushButton" name="browse_button">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>390</y>
+      <width>121</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&amp;Browse template</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="toggle_cam_button">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>390</y>
+      <width>121</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&amp;Enable camera</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="template_label">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>20</y>
+      <y>80</y>
       <width>320</width>
       <height>240</height>
      </rect>
     </property>
     <property name="text">
-     <string>No camera feed</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <string>TextLabel</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="start_competition_button">
+   <widget class="QLabel" name="live_image_label">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>290</y>
-      <width>160</width>
-      <height>40</height>
+      <x>410</x>
+      <y>90</y>
+      <width>320</width>
+      <height>240</height>
      </rect>
     </property>
     <property name="text">
-     <string>Start Time Trials</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="timer_button">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>290</y>
-      <width>140</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Start Timer</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="reset_robot_button">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>290</y>
-      <width>140</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Reset Robot</string>
+     <string>TextLabel</string>
     </property>
    </widget>
   </widget>
@@ -75,7 +72,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>800</width>
      <height>22</height>
     </rect>
    </property>
